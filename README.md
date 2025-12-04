@@ -11,6 +11,7 @@ Mellow is a small Audio-Language Model that takes in two audios and a text promp
 * [Examples](#example)
 * [ReasonAQA](#reasonaqa)
 * [Limitation](#limitation)
+* [Training](#training)
 
 ## Setup
 1. Install the required dependencies: `pip install -r requirements.txt`. For [conda](https://www.anaconda.com), run the following: 
@@ -115,15 +116,17 @@ The field of the JSON dict are:
 ## Limitation
 With Mellow, we aim to showcase that small audio-language models can engage in reasoning. As a research prototype, Mellow has not been trained at scale on publicly available audio datasets, resulting in a limited understanding of audio concepts. Therefore, we advise caution when considering its use in production settings. Ultimately, we hope this work inspires researchers to explore small audio-language models for multitask capabilities, complementing ongoing research on general-purpose audio assistants.
 
+## Training
+To train a mellow-like model on your data or ReasonAQA, please refer to the branch: [`training`](https://github.com/soham97/mellow/tree/training)
+ 
 ## Citation
 ```
-@misc{mellow,
-      title={Mellow: a small audio language model for reasoning}, 
-      author={Soham Deshmukh and Satvik Dixit and Rita Singh and Bhiksha Raj},
-      year={2025},
-      eprint={2503.08540},
-      archivePrefix={arXiv},
-      primaryClass={cs.SD},
-      url={https://arxiv.org/abs/2503.08540}, 
+@inproceedings{
+  deshmukh2025mellow,
+  title={Mellow: a small audio language model for reasoning},
+  author={Soham Deshmukh and Satvik Dixit and Rita Singh and Bhiksha Raj},
+  booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems},
+  year={2025},
+  url={https://openreview.net/forum?id=um4aiicz3L}
 }
 ```
