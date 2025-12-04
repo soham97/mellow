@@ -1,0 +1,120 @@
+MELLOW PROJECT STRUCTURE
+========================
+
+Repository Root
+├── README.md                          # 📘 Main documentation (START HERE!)
+├── train.py                           # 🚀 Main entry point
+├── requirements.txt                   # 📦 Python dependencies
+│
+├── config/                            # ⚙️ Configuration Files
+│   ├── local3.yaml                    # Local training
+│   ├── localeval.yaml                 # Evaluation
+│   └── ...
+│
+├── docs/                              # 📚 Documentation
+│   ├── QUICK_REFERENCE.md             # Quick commands cheat sheet
+│   ├── DISTRIBUTED_TRAINING_README.md # Distributed training overview
+│   ├── LAUNCH_GUIDE.md                # Complete launch guide
+│   ├── QUICKSTART_SLURM.md            # SLURM quick start
+│   ├── SLURM_SETUP.md                 # SLURM detailed guide
+│   └── TROUBLESHOOTING.md             # Common problems & solutions
+│
+├── scripts/                           # 🛠️ Launch Scripts & Tools
+│   ├── test_distributed.sh            # Test multi-GPU setup
+│   ├── check_env.py                   # Check environment variables
+│   ├── verify_slurm_setup.py          # Verify SLURM setup
+│   │
+│   ├── slurm/                         # SLURM Launch Scripts
+│   │   ├── slurm_train.sh             # Multi-node production
+│   │   ├── slurm_train_single_node.sh # Single node testing
+│   │   ├── slurm_train_torchrun.sh    # Alternative launcher
+│   │   └── slurm_debug.sh             # Debug mode
+│   │
+│   └── ssh/                           # SSH Launch Scripts
+│       ├── launch_singlenode.sh       # Single node, multi-GPU
+│       ├── launch_torchrun_auto.sh    # Automated multi-node
+│       ├── launch_torchrun_multinode.sh # Manual multi-node
+│       ├── launch_multinode.sh        # Legacy launcher
+│       └── launch_pdsh_multinode.sh   # Using pdsh
+│
+├── models/                            # 🤖 Model Architecture
+│   ├── mellow.py                      # Main model
+│   ├── audio.py                       # Audio encoders (HTSAT, CNN14)
+│   ├── decoder.py                     # Text decoders
+│   └── generate.py                    # Generation utilities
+│
+├── data/                              # 📊 Data Loading
+│   ├── audiotext_dataset.py           # Training dataset
+│   ├── audiotext_eval_dataset.py      # Evaluation dataset
+│   └── sampler.py                     # Distributed sampler
+│
+├── training/                          # 🏋️ Training Framework
+│   ├── trainer.py                     # Main trainer class
+│   └── log.py                         # Logging utilities
+│
+├── distributed/                       # 🌐 Distributed Training
+│   ├── torch.py                       # PyTorch DDP wrapper
+│   └── __init__.py
+│
+├── metrics/                           # 📈 Evaluation Metrics
+│   ├── aqa.py                         # Audio quality assessment
+│   └── capmetrics.py                  # Caption metrics
+│
+└── utils/                             # 🔧 Utilities
+    ├── launch_utils.py                # Launch helpers
+    └── utils.py                       # General utilities
+
+
+QUICK START GUIDE
+=================
+
+1. Test Setup
+   $ scripts/test_distributed.sh 2
+
+2. Single GPU
+   $ python train.py --config config/local3.yaml
+
+3. Single Node, Multi-GPU (4 GPUs)
+   $ scripts/ssh/launch_singlenode.sh config/local3.yaml 4
+
+4. SLURM Cluster
+   $ sbatch scripts/slurm/slurm_train.sh
+
+5. SSH Multi-Node (2 nodes × 4 GPUs)
+   $ scripts/ssh/launch_torchrun_auto.sh config/local3.yaml 4 node1 node2
+
+
+DOCUMENTATION HIERARCHY
+=======================
+
+README.md (Main)
+    ↓
+    ├── docs/QUICK_REFERENCE.md (Cheat sheet)
+    ├── docs/DISTRIBUTED_TRAINING_README.md (Quick overview)
+    └── docs/LAUNCH_GUIDE.md (Complete guide)
+            ↓
+            ├── docs/QUICKSTART_SLURM.md (SLURM TL;DR)
+            ├── docs/SLURM_SETUP.md (SLURM details)
+            └── docs/TROUBLESHOOTING.md (When stuck)
+
+
+SCRIPT SELECTION GUIDE
+======================
+
+For Testing:
+    → scripts/test_distributed.sh
+
+For Single Node:
+    → scripts/ssh/launch_singlenode.sh
+
+For Multi-Node SSH (easy):
+    → scripts/ssh/launch_torchrun_auto.sh
+
+For Multi-Node SSH (control):
+    → scripts/ssh/launch_torchrun_multinode.sh
+
+For SLURM (testing):
+    → scripts/slurm/slurm_train_single_node.sh
+
+For SLURM (production):
+    → scripts/slurm/slurm_train.sh

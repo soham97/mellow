@@ -1,0 +1,64 @@
+---
+mode: 'evaluate_checkpoint'
+gpu: True
+resume_checkpoint: ""
+
+data:
+    datapath: '/ocean/projects/cis220031p/sdixit1'
+    datafiles:
+        # - 'datafiles\\dummy_train.json'
+        # - 'datafiles\\adiff.json'
+        - 'datafiles/mmau-test-mini_proc2.json'
+        - 'datafiles/mmau-test-mini_proc2.json'
+    sampling_rate: 32000
+    segment_seconds: 10
+    # tokenizer_type: "gpt2"
+    tokenizer_type: "HuggingFaceTB/SmolLM2-135M"
+    op_text_len: 250
+    ip_text_len: 129
+
+model:
+    encoder:
+        audioenc_name: 'HTSAT'
+        transformer_embed_dim: 768
+        out_emb: 768
+        d_proj: 576
+        use_pretrained_audioencoder: True
+        freeze_audio_encoder_weights: True
+        pretrained_audioencoder_path: '/ocean/projects/cis220031p/sdixit1/Mellow/Mellow'
+    decoder:
+      text_decoder: "HuggingFaceTB/SmolLM2-135M"
+    #   text_decoder: "gpt2"
+      prefix_length: 40
+      total_prefix_length: 389 # 129 (audio 1 shape) + 129 (audio 2 shape) + 129 (input len shape) + 2 (sep token shape)
+      freeze_gpt_weights: False
+    model_type: Mellow
+    input_channels: 1
+    output_channels: 1
+    resume_checkpoint: ""
+    inference_window: 5
+
+train:
+    optimizer:
+        optimizer_type: Adam
+        learning_rate: 1e-3
+        warm_up_steps: 10000
+        reduce_lr_steps: 1000000
+        weight_decay: 0.0001
+        scheduler: "cosine"
+    max_grad_norm: 0.5
+    emergency_stop_grad_norm: 1e6
+    num_nodes: 1
+    num_workers: 0
+    persistent_data_workers: True
+    loss_type: sisdr_wav
+    sync_batchnorm: False
+    batch_size: 4
+    num_epochs: 1000
+    log_step: 1
+    sav_per_num_epochs: 1
+    random_seed: 1234
+    mixed_precision:
+        use_mixed_precision: False
+        mixed_precision_dtype: "float16"
+

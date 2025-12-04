@@ -1,0 +1,69 @@
+---
+# Example training configuration for 4 GPUs
+# Copy this file and modify paths according to your setup
+
+mode: 'train'
+gpu: True
+resume_checkpoint: ""
+
+data:
+    # Path to your data directory (update this!)
+    datapath: '/path/to/your/data'
+    # List of JSON files containing dataset metadata
+    datafiles:
+        - 'datafiles/your_dataset.json'
+        - 'datafiles/another_dataset.json'
+    sampling_rate: 32000
+    segment_seconds: 10
+    # Tokenizer model from HuggingFace
+    tokenizer_type: "HuggingFaceTB/SmolLM2-135M"
+    # tokenizer_type: "gpt2"  # Alternative option
+    op_text_len: 250
+    ip_text_len: 129
+
+model:
+    encoder:
+        audioenc_name: 'HTSAT'
+        transformer_embed_dim: 768
+        out_emb: 768
+        d_proj: 576
+        use_pretrained_audioencoder: True
+        freeze_audio_encoder_weights: True
+        # Path to pretrained audio encoder checkpoint (update this!)
+        pretrained_audioencoder_path: '/path/to/pretrained/audio_encoder'
+    decoder:
+      # Text decoder model from HuggingFace
+      text_decoder: "HuggingFaceTB/SmolLM2-135M"
+      # text_decoder: "gpt2"  # Alternative option
+      prefix_length: 40
+      total_prefix_length: 389 # 129 (audio 1 shape) + 129 (audio 2 shape) + 129 (input len shape) + 2 (sep token shape)
+      freeze_gpt_weights: False
+    model_type: Mellow
+    input_channels: 1
+    output_channels: 1
+    resume_checkpoint: ""
+    inference_window: 5
+
+train:
+    optimizer:
+        optimizer_type: Adam
+        learning_rate: 1e-3
+        warm_up_steps: 10000
+        reduce_lr_steps: 1000000
+        weight_decay: 0.0001
+        scheduler: "cosine"
+    max_grad_norm: 0.5 
+    emergency_stop_grad_norm: 1e6
+    num_nodes: 1
+    num_workers: 4  # Number of data loading workers per GPU
+    persistent_data_workers: True
+    loss_type: sisdr_wav
+    sync_batchnorm: True  # Recommended for multi-GPU training
+    batch_size: 4  # Per-GPU batch size
+    num_epochs: 10
+    log_step: 1
+    sav_per_num_epochs: 1
+    random_seed: 1234
+    mixed_precision: 
+        use_mixed_precision: False
+        mixed_precision_dtype: "float16"  # or "bfloat16"
